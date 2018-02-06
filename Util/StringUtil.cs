@@ -8,6 +8,7 @@ namespace Goranee
     {
         protected static StringBuilder stringBuffer = new StringBuilder(2048);
 
+        
         public static string AddString(params string[] strings)
         {
             if (strings == null)

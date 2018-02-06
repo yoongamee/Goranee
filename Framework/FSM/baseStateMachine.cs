@@ -5,20 +5,19 @@ using System.Collections.Generic;
 namespace Goranee
 {
     // like-stack state machine
-    public abstract class baseStateMachine<TOwner, TMessage> :  IMessageProc<TMessage>
+    public abstract class baseStateMachine<TOwner, TMessage> 
     {
-        protected State<TOwner, TMessage> backgroundState;
         protected State<TOwner, TMessage> prevState;
         protected TOwner ownerEntity;
+        public State<TOwner, TMessage> BackgroundState { get; protected set; }
         public State<TOwner, TMessage> CurrentState { get; protected set; }
 
-        public abstract void ReceiveMessage(TMessage message);
-
+       
         public void SetOwner(TOwner owner)
         {
             ownerEntity = owner;
         }
-        public virtual bool ChangeState(State<TOwner, TMessage> newState)
+        public virtual bool Change(State<TOwner, TMessage> newState)
         {
             prevState = CurrentState;
 
@@ -40,9 +39,9 @@ namespace Goranee
 
         public virtual void Update()
         {
-            if (backgroundState != null)
+            if (BackgroundState != null)
             {
-                backgroundState.Execute(ownerEntity);
+                BackgroundState.Execute(ownerEntity);
             }
             
             if (CurrentState != null)
@@ -54,24 +53,24 @@ namespace Goranee
                 Debug.Log("CurrentState is NULL\n");
             }
         }
-        public virtual void SetBackgroundState(State<TOwner, TMessage> backState)
+        public virtual void SetBackground(State<TOwner, TMessage> backState)
         {
-            if (backgroundState != null)
+            if (BackgroundState != null)
             {
-                backgroundState.Out(ownerEntity);
+                BackgroundState.Out(ownerEntity);
             }
 
 
-            backgroundState = backState;
+            BackgroundState = backState;
 
-            if (backgroundState != null)
+            if (BackgroundState != null)
             {
-                backgroundState.In(ownerEntity);
+                BackgroundState.In(ownerEntity);
             }
         }
-        public virtual void GoPreviewState()
+        public virtual void GoPreview()
         {
-            ChangeState(prevState);
+            Change(prevState);
         }
     }
 

@@ -10,6 +10,8 @@ namespace Goranee
     }
     public class baseWindow : MonoBehaviour
     {
+        public virtual void ClearInfo()
+        { }
         public virtual void Init()
         {
         }

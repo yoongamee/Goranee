@@ -13,7 +13,7 @@ namespace Goranee
         public abstract bool SendMsg(T newMessage);
         protected abstract void discard(T newMessage);
 
-        private void Update()
+        public virtual void Update()
         {
             if (delayedMessages.Count == 0)
             {

@@ -28,14 +28,5 @@ namespace Goranee
             Amplitude = amplitude;
             Count = count;
         }
-
-        public override bool Executer()
-        {
-            //if (GOSingleton<GameManager>.Get().mainCamController != null)
-            //{
-            //	GOSingleton<GameManager>.Get().mainCamController.Impact(Duration, MaxAngle, Amplitude, Count);
-            //}
-            return true;
-        }
     }
 }

@@ -5,9 +5,13 @@ namespace Goranee
 {
     public class MessageCenter : MessageQueue<Message>
     {
-
         private HashSet<IMessageProc<Message>> subscribers = new HashSet<IMessageProc<Message>>();
 
+        public void Clear()
+        {
+            subscribers.Clear();
+            delayedMessages.Clear();
+        }
         public void AddSubScriber(IMessageProc<Message> newMember)
         {
             if (subscribers.Contains(newMember) == false)

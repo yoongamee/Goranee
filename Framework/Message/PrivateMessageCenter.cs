@@ -10,24 +10,26 @@ namespace Goranee
         private IMessageProc<Message> owner;
         private PrivateMessageCenter() { }
 
+        public void Clear()
+        {
+            delayedMessages.Clear();
+        }
         public PrivateMessageCenter(IMessageProc<Message> newOwner)
         {
             owner = newOwner;
         }
         public void SendMessageToOwner(Message newMessage)
         {
-            if (newMessage.ExtraInfo == null)
-            {
-                return;
-            }
-
             if (newMessage.DispatchTime == MessageQueue<Message>.Immediately)
             {
                 //Console.WriteLine("Send Message To System Immediatly : " + newMessage.ExtraInfo.MessageID);
                 owner.ReceiveMessage(newMessage);
                 return;
             }
-
+            else
+            {
+                newMessage.SetReceiver(owner);
+            }
             // time class는 정리가 필요
             newMessage.DispatchTime += Time.realtimeSinceStartup;
 

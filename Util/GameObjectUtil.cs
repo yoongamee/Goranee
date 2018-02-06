@@ -188,10 +188,12 @@ namespace Goranee
             {
                 source.parent = dest.transform;
             }
+            source.transform.localPosition = Vector3.zero;
+            source.transform.localRotation = Quaternion.identity;
             // 이것때문에 유니티에서 버그 발생 invalid AABB a
             //source.localPosition = localPosition;
-			//source.localScale = localScale;
-            
+            //source.localScale = localScale;
+
         }
 
         public bool DetachParentGO(Transform sourceNode)

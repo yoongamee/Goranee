@@ -23,6 +23,7 @@ namespace Goranee
                 {
                     instance = new GameObject().AddComponent<T>();
                     instance.gameObject.name = instance.GetType().Name;
+                    GameObject.DontDestroyOnLoad(instance.gameObject);
                 }
             }
 

@@ -22,10 +22,5 @@ namespace Goranee
             collisionInfo = collision;
             MessageID = 1;
         }
-
-        public override bool Executer()
-        {
-            return true;
-        }
     }
 }

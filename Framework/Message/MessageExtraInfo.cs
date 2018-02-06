@@ -14,10 +14,6 @@ namespace Goranee
         }
 
         public int MessageID { get; set; }
-
-        public virtual bool Executer()
-        {
-            return true;
-        }
+        
     }
 }
