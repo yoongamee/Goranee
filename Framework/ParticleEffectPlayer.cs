@@ -4,54 +4,84 @@ using UnityEngine;
 
 namespace Goranee
 {
-    public class ParticleEffectPlayer : MonoBehaviour
+    public class ParticleEffectPlayer : baseEffectPlayer
     {
-        private ParticleSystem[] EffectInterval;
-        public bool IsPlaying;
+        private ParticleSystem[]    EffectInterval;
 
         void Awake()
         {
-            Stop();
+            Init(null);
         }
-       
-        protected void InitParticles()
+        private void OnEnable()
         {
-            if (EffectInterval == null)
-            {
-                EffectInterval = GetComponentsInChildren<ParticleSystem>();
-            }
+            Play( );
+        }
+        public override void Init(System.Action respond)
+        {
+            EffectInterval = GetComponentsInChildren<ParticleSystem>();
 
-            for (int i = 0; i < EffectInterval.Length; ++i)
+            if (0.0f == Lifetime)
             {
-                if (EffectInterval[i].isPlaying == true)
+                if (EffectInterval != null)
                 {
-                    EffectInterval[i].Stop();
-                    EffectInterval[i].Clear();
+                    for (int i = 0; i < EffectInterval.Length; ++i)
+                    {
+                        EffectInterval[i].Play();
+                        if (0 == i)
+                            Lifetime = EffectInterval[i].main.duration;
+
+                        if (0 < i && Lifetime < EffectInterval[i].main.duration)
+                            Lifetime = EffectInterval[i].main.duration;
+                    }
                 }
             }
+            SetEndLifeTimeRespond(respond);
         }
 
-        public void Play()
+        public override void Play()    
         {
             gameObject.SetActive(true);
-            EffectInterval = GetComponentsInChildren<ParticleSystem>();
+            if (EffectInterval != null)
+            {
+                for (int i = 0; i < EffectInterval.Length; ++i)
+                {
+                    EffectInterval[i].Play();
+                }
+            }
+            
+            Invoke("Stop", Lifetime * Time.timeScale);
+        }
+
+        public override void ReleaseObject()
+        {
+            Destroy(gameObject);
+        }
+
+        public override void Stop()
+        {
             for (int i = 0; i < EffectInterval.Length; ++i)
             {
-                EffectInterval[i].Play();
+                if (EffectInterval[i] != null)
+                {
+                    EffectInterval[i].Stop();
+                }
             }
-            IsPlaying = true;
-        }
-
-        public void Stop()
-        {
-            InitParticles();
-            IsPlaying = false;
-
             gameObject.SetActive(false);
+            
+            if (endLifeTimeRespond != null)
+            {
+                endLifeTimeRespond();
+            }
         }
-        void OnDisable()
+        public void OnDestroy()
         {
-            Stop();
+            for (int i = 0; i < EffectInterval.Length; ++i)
+            {
+                if (EffectInterval[i] != null)
+                {
+                    EffectInterval[i] = null;
+                }
+            }
         }
     }
 }

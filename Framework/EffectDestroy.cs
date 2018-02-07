@@ -9,31 +9,35 @@ namespace Goranee
         private ParticleSystem[]    EffectInterval;
         public float                Lifetime = 0f;
         public Animator             AnimatorComponent;
-        void OnEnable() // Mono의 경우 pooling시 Start나 Awake가 아닌 Enable-Disable에 Get-Release를 넣어주길.
+
+        void OnEnable() 
         {
             EffectInterval = GetComponentsInChildren<ParticleSystem>();
 
-            //InitParticles(); 파티클이 정상작동하지 않음. stop다음 바로 play하면 particle이 실행되지 않음.
-
             if (0.0f == Lifetime)
             {
-
-                for (int i = 0; i < EffectInterval.Length; ++i)
+                if (EffectInterval != null)
                 {
-                    EffectInterval[i].Play();
-                    if (0 == i)
-                        Lifetime = EffectInterval[i].main.duration;
+                    for (int i = 0; i < EffectInterval.Length; ++i)
+                    {
+                        EffectInterval[i].Play();
+                        if (0 == i)
+                            Lifetime = EffectInterval[i].main.duration;
 
-                    if (0 < i && Lifetime < EffectInterval[i].main.duration)
-                        Lifetime = EffectInterval[i].main.duration;
+                        if (0 < i && Lifetime < EffectInterval[i].main.duration)
+                            Lifetime = EffectInterval[i].main.duration;
+                    }
+                }
+                if (AnimatorComponent != null)
+                {
+                    AnimatorStateInfo info = AnimatorComponent.GetCurrentAnimatorStateInfo(0);
+                    if (Lifetime < info.length)
+                    {
+                        Lifetime = info.length;
+                    }
                 }
             }
-
-
-            if (AnimatorComponent != null)
-            {
-                AnimatorComponent.StartPlayback();
-            }
+            
             Invoke("ReleaseObject", Lifetime * Time.timeScale);
 
         }
@@ -58,7 +62,8 @@ namespace Goranee
 
         public void ReleaseObject()
         {
-            Singleton<GameObjectPooler>.Get().Release(gameObject.name, gameObject);
+            //Singleton<GameObjectPooler>.Get().Release(gameObject.name, gameObject);
+            Destroy(gameObject);
             if (gameObject.activeInHierarchy == true)
             {
                 gameObject.SetActive(false);    
@@ -68,7 +73,6 @@ namespace Goranee
         void OnDisable()
         {
             CancelInvoke();
-            ReleaseObject();
             InitParticles();
         }
     }
