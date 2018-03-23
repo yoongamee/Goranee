@@ -1,7 +1,7 @@
 ﻿namespace Goranee
 {
-    public interface IMessageProc<T>
+    public interface IMessageProc
     {
-        void ReceiveMessage(T message);
+        bool ReceiveMessage(baseMessage message);
     }
 }

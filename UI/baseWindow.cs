@@ -8,6 +8,7 @@ namespace Goranee
         Modeless,
         Modal,
     }
+    
     public class baseWindow : MonoBehaviour
     {
         public virtual void ClearInfo()

@@ -5,22 +5,22 @@ using UnityEngine;
 
 namespace Goranee
 {
-    public class PrivateMessageCenter : MessageQueue<Message>
+    public class PrivateMessageCenter : baseMessageQueue
     {
-        private IMessageProc<Message> owner;
+        private IMessageProc owner;
         private PrivateMessageCenter() { }
 
         public void Clear()
         {
             delayedMessages.Clear();
         }
-        public PrivateMessageCenter(IMessageProc<Message> newOwner)
+        public PrivateMessageCenter(IMessageProc newOwner)
         {
             owner = newOwner;
         }
-        public void SendMessageToOwner(Message newMessage)
+        public void SendMessageToOwner(baseMessage newMessage)
         {
-            if (newMessage.DispatchTime == MessageQueue<Message>.Immediately)
+            if (newMessage.DispatchTime == baseMessageQueue.Immediately)
             {
                 //Console.WriteLine("Send Message To System Immediatly : " + newMessage.ExtraInfo.MessageID);
                 owner.ReceiveMessage(newMessage);
@@ -37,7 +37,7 @@ namespace Goranee
             //Console.WriteLine("Message Added : " + newMessage.ExtraInfo.MessageID + " : Time is " + Time.time);
         }
 
-        public override bool SendMsg(Message newMessage)
+        public override bool SendMsg(baseMessage newMessage)
         {
             if (newMessage == null)
             {
@@ -53,7 +53,7 @@ namespace Goranee
                 //Console.WriteLine("NO Sender -----\n");
             }
 
-            if (newMessage.DispatchTime == MessageQueue<Message>.Immediately)
+            if (newMessage.DispatchTime == baseMessageQueue.Immediately)
             {
                 //Console.WriteLine("Send Message Immediatly : " + newMessage.ExtraInfo.MessageID);
                 discard(newMessage);
@@ -71,7 +71,7 @@ namespace Goranee
             return true;
         }
 
-        protected override void discard(Message newMessage)
+        protected override void discard(baseMessage newMessage)
         {
             /*if (newMessage.ExtraInfo != null)
             {
@@ -91,7 +91,7 @@ namespace Goranee
             //Singleton<PoolerManager>.Get().Release(newMessage);   todo change
         }
 
-        protected override bool IsPassTime(Message newMessage)
+        protected override bool IsPassTime(baseMessage newMessage)
         {
             if (newMessage.DispatchTime <= (double)Time.realtimeSinceStartup)
             {

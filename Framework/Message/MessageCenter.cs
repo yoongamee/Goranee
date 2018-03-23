@@ -3,42 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Goranee
 {
-    public class MessageCenter : MessageQueue<Message>
+    public class MessageCenter : baseMessageQueue
     {
-        private HashSet<IMessageProc<Message>> subscribers = new HashSet<IMessageProc<Message>>();
+        private HashSet<IMessageProc> subscribers = new HashSet<IMessageProc>();
 
         public void Clear()
         {
             subscribers.Clear();
             delayedMessages.Clear();
         }
-        public void AddSubScriber(IMessageProc<Message> newMember)
+        public void AddSubscriber(IMessageProc newMember)
         {
             if (subscribers.Contains(newMember) == false)
             {
                 subscribers.Add(newMember);
             }
         }
-        public void RemoveSubScriber(IMessageProc<Message> remMember)
+        public void RemoveSubscriber(IMessageProc remMember)
         {
             if ( subscribers.Contains(remMember) == true)
             {
                 subscribers.Remove(remMember);
             }
         }
-        private void broadcast(Message newMessage)
+        private void broadcast(baseMessage newMessage)
         {
             var enumerator = subscribers.GetEnumerator();
             while (enumerator.MoveNext() == true)
             {
                 if (enumerator.Current != null)
                 {
-                    enumerator.Current.ReceiveMessage(newMessage);
+                    if (enumerator.Current.ReceiveMessage(newMessage) == true && newMessage.SwallowMSG == true)
+                    {
+                        break;
+                    }
                 }
             }
         }
 
-        public override bool SendMsg(Message newMessage)
+        public override bool SendMsg(baseMessage newMessage)
         {
             if (newMessage == null)
             {
@@ -50,29 +53,22 @@ namespace Goranee
                 //Console.WriteLine("NO Sender -----\n");
             }
 
-            if (newMessage.DispatchTime == MessageQueue<Message>.Immediately)
+            if (newMessage.DispatchTime == baseMessageQueue.Immediately)
             {
                 //Console.WriteLine("Send Message Immediatly : " + newMessage.ExtraInfo.MessageID);
                 discard(newMessage);
                 return true;
             }
-            if (newMessage.Receiver == null && newMessage.DispatchTime == MessageQueue<Message>.Immediately)    // broadcasting
-            {
-                broadcast(newMessage);
-                return true;
-            }
+            
             // time class는 정리가 필요
             newMessage.DispatchTime += Time.realtimeSinceStartup;
 
             delayedMessages.Add(newMessage);
-            /*if (newMessage.ExtraInfo != null)
-            {
-                Console.WriteLine("Message Added : " + newMessage.ExtraInfo.MessageID + " : Time is " + Time.time);
-            }*/
+            
             return true;
         }
 
-        protected override void discard(Message newMessage)
+        protected override void discard(baseMessage newMessage)
         {
             /*if (newMessage.ExtraInfo != null)
             {
@@ -96,7 +92,7 @@ namespace Goranee
             //Singleton<PoolerManager>.Get().Release(newMessage);   todo change
         }
 
-        protected override bool IsPassTime(Message newMessage)
+        protected override bool IsPassTime(baseMessage newMessage)
         {
             if (newMessage.DispatchTime <= (double)Time.realtimeSinceStartup)
             {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Goranee
 {
-    public abstract class State<TOwner, TMessage> : IMessageProc<TMessage>
+    public abstract class State<TOwner> : IMessageProc
     {
         public State()
         {
@@ -15,7 +15,7 @@ namespace Goranee
         {
             ID = id;
         }
-        public virtual void ReceiveMessage(TMessage message) { }
+        public virtual bool ReceiveMessage(baseMessage message) { return false; }
         public int ID { get; protected set; }
         public abstract bool In(TOwner owner);
         public abstract bool Out(TOwner owner);

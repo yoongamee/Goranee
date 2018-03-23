@@ -1,19 +1,11 @@
-﻿// empty class 
+﻿// data Holder class 
 // it's base class to handle extra infos. you need to inherit to use this class
 namespace Goranee
 {
-    public class MessageExtraInfo
+    public abstract class MessageExtraInfo
     {
-        public MessageExtraInfo()
+        protected MessageExtraInfo()
         {
         }
-
-        public MessageExtraInfo(int ID)
-        {
-            MessageID = ID;
-        }
-
-        public int MessageID { get; set; }
-        
     }
 }

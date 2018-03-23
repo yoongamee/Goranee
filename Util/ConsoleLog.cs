@@ -144,12 +144,12 @@ namespace Consolation
         int GetRatioW(int iValue)
         {
             //if ( Screen.currentResolution.width)
-            //return (int)(iValue * (Screen.width / 1280.0f));
+            
             if (Screen.orientation == ScreenOrientation.Portrait)
             {
-                return (int)(iValue * (Screen.height / Screen.currentResolution.width));
+                return (int)(iValue * (Screen.width / 1280.0f)); //return (int)(iValue * (Screen.height / Screen.currentResolution.width));
             }
-            return (int)(iValue * (Screen.width / Screen.currentResolution.width));
+            return (int)(iValue * (Screen.width / 1280.0f)); //return (int)(iValue * (Screen.width / Screen.currentResolution.width));
         }
 
         int GetRatioH(int iValue)
@@ -157,9 +157,9 @@ namespace Consolation
             //return (int)(iValue * (Screen.height / 720.0f));
             if (Screen.orientation == ScreenOrientation.Portrait)
             {
-                return (int)(iValue * (Screen.width / Screen.currentResolution.width));
+                return (int)(iValue * (Screen.height / 720.0f)); //return (int)(iValue * (Screen.width / Screen.currentResolution.width));
             }
-            return (int)(iValue * (Screen.height / Screen.currentResolution.height));
+            return (int)(iValue * (Screen.height / 720.0f)); //return (int)(iValue * (Screen.height / Screen.currentResolution.height));
         }
 
         /// <summary>

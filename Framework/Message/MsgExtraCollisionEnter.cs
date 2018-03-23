@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 namespace Goranee
 {
@@ -20,7 +21,6 @@ namespace Goranee
         public void Set(Collision collision)
         {
             collisionInfo = collision;
-            MessageID = 1;
         }
     }
 }

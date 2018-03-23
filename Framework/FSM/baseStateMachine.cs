@@ -5,19 +5,19 @@ using System.Collections.Generic;
 namespace Goranee
 {
     // like-stack state machine
-    public abstract class baseStateMachine<TOwner, TMessage> 
+    public abstract class baseStateMachine<TOwner> 
     {
-        protected State<TOwner, TMessage> prevState;
+        protected State<TOwner> prevState;
         protected TOwner ownerEntity;
-        public State<TOwner, TMessage> BackgroundState { get; protected set; }
-        public State<TOwner, TMessage> CurrentState { get; protected set; }
+        public State<TOwner> BackgroundState { get; protected set; }
+        public State<TOwner> CurrentState { get; protected set; }
 
        
         public void SetOwner(TOwner owner)
         {
             ownerEntity = owner;
         }
-        public virtual bool Change(State<TOwner, TMessage> newState)
+        public virtual bool Change(State<TOwner> newState)
         {
             prevState = CurrentState;
 
@@ -48,12 +48,12 @@ namespace Goranee
             {
                 CurrentState.Execute(ownerEntity);
             }
-            else
+            /*else
             {
                 Debug.Log("CurrentState is NULL\n");
-            }
+            }*/
         }
-        public virtual void SetBackground(State<TOwner, TMessage> backState)
+        public virtual void SetBackground(State<TOwner> backState)
         {
             if (BackgroundState != null)
             {
