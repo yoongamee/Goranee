@@ -6,6 +6,7 @@ namespace Goranee
 {
     public class EffectDestroy : MonoBehaviour
     {
+        public readonly float       UnlimitTime = -1.0f;
         private ParticleSystem[]    EffectInterval;
         public float                Lifetime = 0f;
         public Animator             AnimatorComponent;
@@ -37,9 +38,10 @@ namespace Goranee
                     }
                 }
             }
-            
-            Invoke("ReleaseObject", Lifetime * Time.timeScale);
-
+            if (UnlimitTime != Lifetime)
+            {
+                Invoke("ReleaseObject", Lifetime * Time.timeScale);
+            }
         }
 
         protected void InitParticles()

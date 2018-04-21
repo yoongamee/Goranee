@@ -1,40 +1,58 @@
-﻿
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Goranee
 {
-    public abstract class MessageQueue<T> 
+    public class MessageQueue : baseMessageQueue
     {
-        public static readonly float Immediately = -1.0f;
-
-        protected List<T> delayedMessages = new List<T>(32);
-
-        public abstract bool SendMsg(T newMessage);
-        protected abstract void discard(T newMessage);
-
-        public virtual void Update()
+        public override bool SendMsg(baseMessage newMessage, float time)
         {
-            if (delayedMessages.Count == 0)
+            if (newMessage == null)
             {
-                return;
+                return false;
             }
-            for (int i = 0; i < delayedMessages.Count; i++)
+            if (newMessage.Receiver == null)
             {
-                if (delayedMessages[i] == null)
-                {
-                    delayedMessages.RemoveAt(i);
-                    continue;
-                }
+                return false;
+            }
+            if (newMessage.Sender == null)
+            {
+                return false;
+            }
 
-                if (IsPassTime(delayedMessages[i]) == true)
-                {
-                    discard(delayedMessages[i]);
-                }
+            if (newMessage.DispatchTime == baseMessageQueue.Immediately)
+            {
+                discard(newMessage);
+                return true;
             }
+
+            // time class는 정리가 필요
+            newMessage.DispatchTime += time;
+
+            delayedMessages.Add(newMessage);
+
+            return true;
         }
 
-        protected abstract bool IsPassTime(T newMessage);
-    }
+        protected override void discard(baseMessage newMessage)
+        {
 
+            if (newMessage.Receiver != null)
+            {
+                newMessage.Receiver.ReceiveMessage(newMessage);
+            }
+
+            delayedMessages.Remove(newMessage);
+        }
+
+        protected override bool IsPassTime(baseMessage newMessage, float nowTime)
+        {
+            if (newMessage.DispatchTime <= nowTime)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
 }
